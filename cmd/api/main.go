@@ -4,7 +4,10 @@ import (
 	"context"
 	"errors"
 	"file-parser/internal/config"
+	"file-parser/internal/handler"
+	"file-parser/internal/repository"
 	"file-parser/internal/server"
+	"file-parser/internal/service"
 	"log"
 	"net/http"
 	"os"
@@ -14,33 +17,42 @@ import (
 )
 
 func main() {
-	// Loading server config
-	serverConfig, err := config.LoadConfig("")
-	if err != nil {
-		log.Fatalf("error when loading server config: %v\n", err)
+	configPath := os.Getenv("CONFIG_PATH")
+	if configPath == "" {
+		log.Fatalln("error when loading env CONFIG_PATH")
 	}
 
-	server := server.NewServer(&serverConfig)
+	config, err := config.LoadConfig(configPath)
+	if err != nil {
+		log.Fatalf("error when loading config: %v", err)
+	}
 
-	// Launching server in goroutine
+	repository := repository.NewRepository(nil)
+	service := service.NewService(repository)
+	handler := handler.NewHandler(service)
+
+	server := server.NewServer(&config.Server, handler.InitHandlers(&config.Logger))
+
 	go func() {
+		log.Printf("server is running on %s:%s\n", config.Server.Host, config.Server.Port)
 		if err := server.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("server error: %v\n", err)
+			log.Fatalf("server error: %v", err)
 		}
 	}()
 
-	// Wait signal of interrupt (graceful shutdown)
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
-	// Create context with timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		config.Server.TimeForGracefulShutdown*time.Second,
+	)
 	defer cancel()
 
-	// Shutting down server
+	log.Println("shutting down server")
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("server forced to shutdown: %v\n", err)
+		log.Fatalf("server forced to shutdown: %v", err)
 	}
 
 	log.Println("server exited properly")
