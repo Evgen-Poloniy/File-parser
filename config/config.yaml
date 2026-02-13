@@ -1,4 +1,15 @@
 # Server config
-read_timeout: 4s
-write_timeout: 10s
-max_header_bytes: 1048576 # 1 MB
+server:
+  read_timeout: 4s
+  write_timeout: 10s
+  max_header_bytes: 1048576 # 1 MB
+
+# Database config
+database:
+  ssl_mode: disable
+
+# Logger config
+logger:
+  level: info
+  format: json
+
