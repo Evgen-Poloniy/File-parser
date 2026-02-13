@@ -3,6 +3,7 @@ server:
   read_timeout: 4s
   write_timeout: 10s
   max_header_bytes: 1048576 # 1 MB
+  time_for_graceful_shutdown: 10s # seconds
 
 # Database config
 database:

@@ -9,11 +9,12 @@ import (
 
 // Config with tags from cleanenv library
 type ServerConfig struct {
-	Host           string        `env:"API_HOST" env-required:"true"`
-	Port           string        `env:"API_PORT" env-required:"true"`
-	MaxHeaderBytes int           `yaml:"max_header_bytes" env-default:"1048576"`
-	ReadTimeout    time.Duration `yaml:"read_timeout" env-default:"4s"`
-	WriteTimeout   time.Duration `yaml:"write_timeout" env-default:"10s"`
+	Host                    string        `env:"API_HOST" env-required:"true"`
+	Port                    string        `env:"API_PORT" env-required:"true"`
+	MaxHeaderBytes          int           `yaml:"max_header_bytes" env-default:"1048576"`
+	ReadTimeout             time.Duration `yaml:"read_timeout" env-default:"4s"`
+	WriteTimeout            time.Duration `yaml:"write_timeout" env-default:"10s"`
+	TimeForGracefulShutdown time.Duration `yaml:"time_for_graceful_shutdown" env-default:"10s"`
 }
 
 // Database config from env and config.yaml
