@@ -13,12 +13,12 @@ type Server struct {
 }
 
 // Create new http server
-func NewServer(config *config.ServerConfig) *Server {
+func NewServer(config *config.ServerConfig, handler http.Handler) *Server {
 	return &Server{
 		httpServer: &http.Server{
 			Addr:           fmt.Sprintf("%s:%s", config.Host, config.Port),
 			MaxHeaderBytes: config.MaxHeaderBytes,
-			Handler:        config.Handler,
+			Handler:        handler,
 			ReadTimeout:    config.ReadTimeout,
 			WriteTimeout:   config.WriteTimeout,
 		},
