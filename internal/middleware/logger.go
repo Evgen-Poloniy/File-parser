@@ -2,6 +2,8 @@ package middleware
 
 import (
 	"file-parser/internal/config"
+	"file-parser/internal/logutil"
+
 	"os"
 	"time"
 
@@ -11,11 +13,9 @@ import (
 
 func InitLogger(config *config.LoggerConfig) gin.HandlerFunc {
 	logger := logrus.New()
-
-	setLoggerLevel(logger, config)
-	setFormatter(logger, config)
-
 	logger.SetOutput(os.Stdout)
+	logutil.SetLevel(logger, config)
+	logutil.SetFormatter(logger, config)
 
 	return func(c *gin.Context) {
 		start := time.Now()
@@ -45,38 +45,5 @@ func InitLogger(config *config.LoggerConfig) gin.HandlerFunc {
 				entry.Info("request completed")
 			}
 		}
-	}
-}
-
-// Set logger level
-func setLoggerLevel(logger *logrus.Logger, conf *config.LoggerConfig) {
-	switch conf.Level {
-	case config.DebugLevel:
-		logger.SetLevel(logrus.DebugLevel)
-	case config.InfoLevel:
-		logger.SetLevel(logrus.InfoLevel)
-	case config.WarnLevel:
-		logger.SetLevel(logrus.WarnLevel)
-	case config.ErrorLevel:
-		logger.SetLevel(logrus.ErrorLevel)
-	default:
-		logger.SetLevel(logrus.InfoLevel)
-	}
-}
-
-func setFormatter(logger *logrus.Logger, conf *config.LoggerConfig) {
-	switch conf.Format {
-	case config.JsonFormat:
-		logger.SetFormatter(&logrus.JSONFormatter{
-			TimestampFormat: "2006-01-02 15:04:05",
-		})
-	case config.TextFormat:
-		logger.SetFormatter(&logrus.TextFormatter{
-			TimestampFormat: "2006-01-02 15:04:05",
-		})
-	default:
-		logger.SetFormatter(&logrus.JSONFormatter{
-			TimestampFormat: "2006-01-02 15:04:05",
-		})
 	}
 }
