@@ -30,11 +30,22 @@ type LoggerConfig struct {
 	Format string `yaml:"format" env-default:"json"`
 }
 
+// Parser config from config.yaml
+type ParserConfig struct {
+	CountOfWorkers int           `yaml:"count_of_workers" env-default:"3" validate:"gte=1,lte=10"`
+	ScanFrequency  time.Duration `yaml:"scan_frequency" env-default:"60s"`
+	InputDir       string        `yaml:"input_dir" env-default:"./input-data"`
+	OutputDir      string        `yaml:"output_dir" env-default:"./output-data"`
+	InputFormat    string        `yaml:"input_format" env-default:".tsv" validate:"oneof=.tsv"`
+	OutputFormat   string        `yaml:"output_format" env-default:".doc" validate:"oneof=.doc"`
+}
+
 // Dataclass with all configs
 type Config struct {
 	Server   ServerConfig   `yaml:"server"`
 	Database DatabaseConfig `yaml:"database"`
 	Logger   LoggerConfig   `yaml:"logger"`
+	Parser   ParserConfig   `yaml:"parser"`
 }
 
 // Load config from config/config.yaml

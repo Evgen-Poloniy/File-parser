@@ -14,3 +14,11 @@ logger:
   level: info
   format: json
 
+# Parser config
+parser:
+  count_of_workers: 3
+  scan_frequency: 60s # milliseconds, seconds, minutes
+  input_dir: ./input-data
+  output_dir: ./output-data
+  input_format: .tsv
+  output_format: .doc
