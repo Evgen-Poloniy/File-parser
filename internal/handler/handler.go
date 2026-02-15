@@ -10,11 +10,11 @@ import (
 
 // Handler
 type Handler struct {
-	service service.RepositoryAdapter
+	service service.Reader
 }
 
 // NewHandler creates a new Handler with the given service
-func NewHandler(service service.RepositoryAdapter) *Handler {
+func NewHandler(service service.Reader) *Handler {
 	return &Handler{
 		service: service,
 	}
