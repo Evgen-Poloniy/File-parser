@@ -1,16 +1,41 @@
 package service
 
-import "file-parser/internal/repository"
+import (
+	"context"
+	"file-parser/internal/dto"
+	"file-parser/internal/entity"
+	"file-parser/internal/repository"
+)
 
-type RepositoryAdapter interface {
+type Reader interface {
+	// Get data about device by unit_guid
+	GetData(unitGUID string, limit int, page int) ([]dto.Response, error)
 }
 
-type Service struct {
-	RepositoryAdapter
+type Writer interface {
+	// Parse tsv file and return slices of data
+	ParseFile(ctx context.Context, path string) ([]entity.Device, []entity.DeviceData, error)
+
+	// Load data into database
+	LoadParsedData(ctx context.Context, file *entity.File, devices []entity.Device, deviceData []entity.DeviceData) error
 }
 
-func NewService(repository repository.RepositoryAdapter) *Service {
-	return &Service{
-		RepositoryAdapter: newRepositoryService(repository),
+type QueryService struct {
+	Reader
+}
+
+type ParserService struct {
+	Writer
+}
+
+func NewQueryService(reader repository.Reader) *QueryService {
+	return &QueryService{
+		Reader: newReaderService(reader),
+	}
+}
+
+func NewParserService(writer repository.Writer) *ParserService {
+	return &ParserService{
+		Writer: newWriterService(writer),
 	}
 }
