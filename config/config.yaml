@@ -7,6 +7,7 @@ server:
 
 # Database config
 database:
+  db_name: parsed_files
   ssl_mode: disable
 
 # Logger config
@@ -17,8 +18,7 @@ logger:
 # Parser config
 parser:
   count_of_workers: 3
-  scan_frequency: 60s # milliseconds, seconds, minutes
+  scan_frequency: 10s # milliseconds, seconds, minutes
   input_dir: ./input-data
   output_dir: ./output-data
-  input_format: .tsv
-  output_format: .doc
+  error_dir: ./error-data

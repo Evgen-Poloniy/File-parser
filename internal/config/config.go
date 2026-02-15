@@ -1,9 +1,9 @@
 package config
 
 import (
-	"fmt"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
@@ -19,15 +19,18 @@ type ServerConfig struct {
 
 // Database config from env and config.yaml
 type DatabaseConfig struct {
+	Host     string `env:"DATABASE_HOST" env-required:"true"`
+	Port     string `env:"DATABASE_PORT" env-required:"true"`
 	Username string `env:"DATABASE_USERNAME" env-required:"true"`
 	Password string `env:"DATABASE_PASSWORD" env-required:"true"`
-	SSLMode  string `yaml:"ssl_mode" env-required:"true"`
+	DBName   string `yaml:"db_name"`
+	SSLMode  string `yaml:"ssl_mode" env-required:"true" validate:"oneof=disable require"`
 }
 
 // Logger config from config.yaml
 type LoggerConfig struct {
-	Level  string `yaml:"level" env-default:"info"`
-	Format string `yaml:"format" env-default:"json"`
+	Level  string `yaml:"level" env-default:"info" validate:"oneof=debug info warn error"`
+	Format string `yaml:"format" env-default:"json" validate:"oneof=text json"`
 }
 
 // Parser config from config.yaml
@@ -36,8 +39,7 @@ type ParserConfig struct {
 	ScanFrequency  time.Duration `yaml:"scan_frequency" env-default:"60s"`
 	InputDir       string        `yaml:"input_dir" env-default:"./input-data"`
 	OutputDir      string        `yaml:"output_dir" env-default:"./output-data"`
-	InputFormat    string        `yaml:"input_format" env-default:".tsv" validate:"oneof=.tsv"`
-	OutputFormat   string        `yaml:"output_format" env-default:".doc" validate:"oneof=.doc"`
+	ErrorDir       string        `yaml:"error_dir" env-default:"./error-data"`
 }
 
 // Dataclass with all configs
@@ -55,22 +57,9 @@ func LoadConfig(path string) (Config, error) {
 		return Config{}, err
 	}
 
-	switch config.Logger.Level {
-	case DebugLevel, InfoLevel, WarnLevel, ErrorLevel:
-	default:
-		return Config{}, fmt.Errorf(`selected incorrect logger level: "%s"`, config.Logger.Level)
-	}
-
-	switch config.Logger.Format {
-	case TextFormat, JsonFormat:
-	default:
-		return Config{}, fmt.Errorf(`selected incorrect logger format: "%s"`, config.Logger.Format)
-	}
-
-	switch config.Database.SSLMode {
-	case SSLDisable, SSLRequire:
-	default:
-		return Config{}, fmt.Errorf(`selected incorrect ssl mode: "%s"`, config.Database.SSLMode)
+	validate := validator.New()
+	if err := validate.Struct(config); err != nil {
+		return Config{}, err
 	}
 
 	return config, nil

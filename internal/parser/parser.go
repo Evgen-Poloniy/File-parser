@@ -14,6 +14,7 @@ import (
 type FileParser struct {
 	inputDir  string
 	outputDir string
+	errorDir  string
 	service   service.Writer
 	logger    *logrus.Logger
 }
@@ -22,6 +23,7 @@ func NewFileParser(service service.Writer, config *config.ParserConfig, logger *
 	return &FileParser{
 		inputDir:  config.InputDir,
 		outputDir: config.OutputDir,
+		errorDir:  config.ErrorDir,
 		service:   service,
 		logger:    logger,
 	}
