@@ -7,18 +7,18 @@ import (
 	"file-parser/internal/entity"
 )
 
-type PostgreSQLRepository struct {
+type PostgresRepository struct {
 	db *sql.DB
 }
 
-func newPostgreSQLRepository(db *sql.DB) *PostgreSQLRepository {
-	return &PostgreSQLRepository{
+func newPostgresRepository(db *sql.DB) *PostgresRepository {
+	return &PostgresRepository{
 		db: db,
 	}
 }
 
 // Check record in the database. If returning id equals 0, then file must go to parsing
-func (p *PostgreSQLRepository) CheckRecordAboutFile(ctx context.Context, filename string) (int64, error) {
+func (p *PostgresRepository) CheckRecordAboutFile(ctx context.Context, filename string) (int64, error) {
 	var id int64
 	query := "SELECT id FROM files WHERE filename = $1"
 	if err := p.db.QueryRowContext(ctx, query, filename).Scan(&id); err != nil {
@@ -33,7 +33,7 @@ func (p *PostgreSQLRepository) CheckRecordAboutFile(ctx context.Context, filenam
 }
 
 // Insert information about file and parsed data into the database by one transaction
-func (p *PostgreSQLRepository) InsertParsedData(ctx context.Context, file *entity.File, devices []entity.Device, deviceData []entity.DeviceData) error {
+func (p *PostgresRepository) InsertParsedData(ctx context.Context, file *entity.File, devices []entity.Device, deviceData []entity.DeviceData) error {
 	tx, err := p.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
 		return err
@@ -93,6 +93,6 @@ func (p *PostgreSQLRepository) InsertParsedData(ctx context.Context, file *entit
 }
 
 // Get data about device by unit_guid
-func (p *PostgreSQLRepository) GetData(unitGUID string, limit int, page int) ([]dto.Response, error) {
+func (p *PostgresRepository) GetData(unitGUID string, limit int, page int) ([]dto.Response, error) {
 	return nil, nil
 }

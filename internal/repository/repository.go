@@ -29,7 +29,7 @@ type Repository struct {
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		Reader: newPostgreSQLRepository(db),
-		Writer: newPostgreSQLRepository(db),
+		Reader: newPostgresRepository(db),
+		Writer: newPostgresRepository(db),
 	}
 }
