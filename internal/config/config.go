@@ -23,8 +23,8 @@ type DatabaseConfig struct {
 	Port     string `env:"DATABASE_PORT" env-required:"true"`
 	Username string `env:"DATABASE_USERNAME" env-required:"true"`
 	Password string `env:"DATABASE_PASSWORD" env-required:"true"`
-	DBName   string `yaml:"db_name"`
-	SSLMode  string `yaml:"ssl_mode" env-required:"true" validate:"oneof=disable require"`
+	DBName   string `env:"DB_NAME" env-required:"true"`
+	SSLMode  string `env:"SSL_MODE" env-required:"true" validate:"oneof=disable require"`
 }
 
 // Logger config from config.yaml
