@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"file-parser/internal/config"
 	"fmt"
+
+	_ "github.com/lib/pq"
 )
 
 func NewPostgreSQLDatabase(config *config.DatabaseConfig) (*sql.DB, error) {
@@ -23,22 +25,21 @@ func NewPostgreSQLDatabase(config *config.DatabaseConfig) (*sql.DB, error) {
 
 	queries := []string{
 		`
-		CREATE TABLE files (
+		CREATE TABLE IF NOT EXISTS files (
 			id BIGSERIAL PRIMARY KEY,
 			filename VARCHAR(255) NOT NULL UNIQUE,
 			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 		);
 		`,
 		`
-		CREATE TABLE devices (
+		CREATE TABLE IF NOT EXISTS devices (
 			id BIGSERIAL PRIMARY KEY,
 			unit_guid VARCHAR(36) NOT NULL UNIQUE,
-			inv_id VARCHAR(100),
-			file_id BIGINT REFERENCES files(id) ON DELETE CASCADE
+			inv_id VARCHAR(100)
 		);
 		`,
 		`
-		CREATE TABLE device_data (
+		CREATE TABLE IF NOT EXISTS device_data (
 			id BIGSERIAL PRIMARY KEY,
 			n INT,
 			mqtt VARCHAR(255),
@@ -54,6 +55,22 @@ func NewPostgreSQLDatabase(config *config.DatabaseConfig) (*sql.DB, error) {
 			bit INT,
 			invert_bit INT,
 			device_id BIGINT REFERENCES devices(id) ON DELETE CASCADE
+		);
+		`,
+		`
+		CREATE TABLE IF NOT EXISTS not_parsed_files (
+			id BIGSERIAL PRIMARY KEY,
+			filename TEXT UNIQUE NOT NULL,
+			created_at TIMESTAMP DEFAULT NOW()
+		);
+		`,
+		`
+		CREATE TABLE IF NOT EXISTS file_errors (
+			id BIGSERIAL PRIMARY KEY,
+			file_id BIGINT REFERENCES not_parsed_files(id) ON DELETE CASCADE,
+			line INT NULL,
+			line_data TEXT NULL,
+			error_msg TEXT NOT NULL
 		);
 		`,
 	}
