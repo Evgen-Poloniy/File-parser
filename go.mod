@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
+	github.com/lib/pq v1.11.2
 	github.com/sirupsen/logrus v1.9.4
 )
 
