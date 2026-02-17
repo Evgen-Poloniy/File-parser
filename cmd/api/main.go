@@ -43,9 +43,14 @@ func main() {
 	if err != nil {
 		logger.Fatalf("database initialize error: %v", err)
 	}
-	defer db.Close()
+	defer func() {
+		db.Close()
+		logger.Println("database connection has been closed")
+	}()
+	logger.Println("database connection established successful")
 
 	repository := repository.NewRepository(db)
+
 	queryService := service.NewQueryService(repository)
 	parserService := service.NewParserService(repository)
 
