@@ -19,10 +19,10 @@ type ServerConfig struct {
 
 // Database config from env and config.yaml
 type DatabaseConfig struct {
-	Host     string `env:"DATABASE_HOST" env-required:"true"`
-	Port     string `env:"DATABASE_PORT" env-required:"true"`
-	Username string `env:"DATABASE_USERNAME" env-required:"true"`
-	Password string `env:"DATABASE_PASSWORD" env-required:"true"`
+	Host     string `env:"DB_HOST" env-required:"true"`
+	Port     string `env:"DB_PORT" env-required:"true"`
+	Username string `env:"DB_USER" env-required:"true"`
+	Password string `env:"DB_PASSWORD" env-required:"true"`
 	DBName   string `env:"DB_NAME" env-required:"true"`
 	SSLMode  string `env:"SSL_MODE" env-required:"true" validate:"oneof=disable require"`
 }
