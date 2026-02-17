@@ -31,6 +31,8 @@ func (h *Handler) InitHandlers(config *config.LoggerConfig) *gin.Engine {
 	router.Use(gin.Recovery())
 
 	router.GET("/health", h.health)
+	router.GET("/get-data", h.getDataByUnitGUID)
+	router.GET("/get-errors", h.getErrorsByFilename)
 
 	return router
 }
