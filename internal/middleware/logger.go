@@ -3,6 +3,7 @@ package middleware
 import (
 	"file-parser/internal/config"
 	"file-parser/internal/logutil"
+	"strings"
 
 	"os"
 	"time"
@@ -34,7 +35,9 @@ func InitLogger(config *config.LoggerConfig) gin.HandlerFunc {
 		})
 
 		if len(c.Errors) > 0 {
-			entry.Error(c.Errors.String())
+			errs := strings.Join(c.Errors.Errors(), "; ")
+			entry.Error(errs)
+			// entry.Error(c.Errors.String())
 		} else {
 			switch {
 			case status >= 500:
