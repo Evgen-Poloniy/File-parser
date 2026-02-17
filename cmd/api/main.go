@@ -21,9 +21,25 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
+// @title File Parser API
+// @version 1.0
+// @description API for parsing files and retrieving data.
+// @host localhost:3505
+// @BasePath /api/v1
 func main() {
+	apiKey := os.Getenv("API_KEY")
+	if apiKey == "" {
+		log.Fatalln("error when loading env API_KEY")
+	}
+
+	apiKeyHash, err := bcrypt.GenerateFromPassword([]byte(apiKey), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatalf("error when generation API_KEY hash: %v", err)
+	}
+
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
 		log.Fatalln("error when loading env CONFIG_PATH")
@@ -62,7 +78,7 @@ func main() {
 	defer cancel()
 
 	wg.Add(1)
-	server := server.NewServer(&config.Server, handler.InitHandlers(&config.Logger))
+	server := server.NewServer(&config.Server, handler.InitHandlers(&config.Logger, apiKeyHash))
 	go func() {
 		defer wg.Done()
 
