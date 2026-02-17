@@ -34,7 +34,7 @@ func (s *Scanner) Scan(ctx context.Context, jobs chan string) {
 		default:
 			start := time.Now()
 
-			fileNames, err := s.scanDir(ctx)
+			filenames, err := s.scanDir(ctx)
 			if err != nil {
 				if err == ctx.Err() {
 					return
@@ -44,11 +44,11 @@ func (s *Scanner) Scan(ctx context.Context, jobs chan string) {
 
 			}
 
-			for _, fileName := range fileNames {
+			for _, filename := range filenames {
 				select {
 				case <-ctx.Done():
 					return
-				case jobs <- fileName:
+				case jobs <- filepath.Base(filename):
 				}
 			}
 
