@@ -26,9 +26,12 @@ import (
 
 // @title File Parser API
 // @version 1.0
-// @description API for parsing files and retrieving data.
+// @description API for parsing files and retrieving parsed data and errors.
 // @host localhost:3505
 // @BasePath /api/v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	apiKey := os.Getenv("API_KEY")
 	if apiKey == "" {
