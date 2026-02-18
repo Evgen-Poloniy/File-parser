@@ -1,6 +1,6 @@
-TARGET := file-parser.exe
+TARGET := file-parser
 CGO_ENABLED := 0
-GOOS := windows
+GOOS := linux
 GOARCH := amd64
 CMD_API_DIR := cmd/api
 BIN_DIR := bin
@@ -18,6 +18,15 @@ launch: clean all
 
 run:
 	go run $(CMD_API_DIR)/main.go
+
+build:
+	docker-compose build
+
+up:
+	docker-compose up
+
+down:
+	docker-compose down
 
 clean:
 	-rm $(BIN_DIR)/*
