@@ -1,0 +1,243 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for parsing files and retrieving parsed data and errors.",
+        "title": "File Parser API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:3505",
+    "basePath": "/api/v1",
+    "paths": {
+        "/get-data": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns paginated parsed data for a given unit GUID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "data"
+                ],
+                "summary": "Get parsed data by Unit GUID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Unit GUID",
+                        "name": "unit_guid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maximum": 1000,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1000,
+                        "description": "Limit of records (1-1000)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number (\u003e=1)",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-errors": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns paginated errors for a given filename",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "errors"
+                ],
+                "summary": "Get parsing errors by filename",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filename",
+                        "name": "filename",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maximum": 1000,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1000,
+                        "description": "Limit of records (1-1000)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number (\u003e=1)",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FileErrorInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Check service availability",
+                "tags": [
+                    "system"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.Error": {
+            "description": "Standard error response structure",
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.FileErrorInfo": {
+            "description": "Information about errors that occurred during file parsing",
+            "type": "object",
+            "properties": {
+                "error_msg": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "line": {
+                    "type": "integer"
+                },
+                "line_data": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Response": {
+            "description": "Data record structure returned from the database",
+            "type": "object",
+            "properties": {
+                "addr": {
+                    "type": "string"
+                },
+                "area": {
+                    "type": "string"
+                },
+                "bit": {
+                    "type": "integer"
+                },
+                "block": {
+                    "type": "string"
+                },
+                "class": {
+                    "type": "string"
+                },
+                "context": {
+                    "type": "string"
+                },
+                "inv_id": {
+                    "type": "string"
+                },
+                "invert_bit": {
+                    "type": "integer"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "mqtt": {
+                    "type": "string"
+                },
+                "msg_id": {
+                    "type": "string"
+                },
+                "n": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "unit_guid": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

@@ -10,6 +10,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// getErrorsByFilename godoc
+// @Summary Get parsing errors by filename
+// @Description Returns paginated errors for a given filename
+// @Tags errors
+// @Produce json
+// @Param filename query string true "Filename"
+// @Param limit query int false "Limit of records (1-1000)" default(1000) minimum(1) maximum(1000)
+// @Param page query int false "Page number (>=1)" default(1) minimum(1)
+// @Success 200 {object} dto.FileErrorInfo
+// @Failure 400 {object} dto.Error "Invalid request parameters"
+// @Failure 500 {object} dto.Error "Internal server error"
+// @Security ApiKeyAuth
+// @Router /get-errors [get]
 func (h *Handler) getErrorsByFilename(c *gin.Context) {
 	ctx := c.Request.Context()
 

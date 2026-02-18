@@ -1,6 +1,7 @@
 package dto
 
-// Dataclass for response from database
+// Response represents a data record from database
+// @Description Data record structure returned from the database
 type Response struct {
 	N         *int    `json:"n"`
 	UnitGUID  string  `json:"unit_guid"`
@@ -19,7 +20,8 @@ type Response struct {
 	InvertBit *int    `json:"invert_bit"`
 }
 
-// Dataclass for response with information about parse error from database
+// FileErrorInfo represents parsing error information
+// @Description Information about errors that occurred during file parsing
 type FileErrorInfo struct {
 	Filename string  `json:"filename"`
 	Line     *int    `json:"line"`
