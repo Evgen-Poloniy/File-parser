@@ -1,0 +1,162 @@
+basePath: /api/v1
+definitions:
+  dto.Error:
+    description: Standard error response structure
+    properties:
+      error:
+        type: string
+    type: object
+  dto.FileErrorInfo:
+    description: Information about errors that occurred during file parsing
+    properties:
+      error_msg:
+        type: string
+      filename:
+        type: string
+      line:
+        type: integer
+      line_data:
+        type: string
+    type: object
+  dto.Response:
+    description: Data record structure returned from the database
+    properties:
+      addr:
+        type: string
+      area:
+        type: string
+      bit:
+        type: integer
+      block:
+        type: string
+      class:
+        type: string
+      context:
+        type: string
+      inv_id:
+        type: string
+      invert_bit:
+        type: integer
+      level:
+        type: integer
+      mqtt:
+        type: string
+      msg_id:
+        type: string
+      "n":
+        type: integer
+      text:
+        type: string
+      type:
+        type: string
+      unit_guid:
+        type: string
+    type: object
+host: localhost:3505
+info:
+  contact: {}
+  description: API for parsing files and retrieving parsed data and errors.
+  title: File Parser API
+  version: "1.0"
+paths:
+  /get-data:
+    get:
+      description: Returns paginated parsed data for a given unit GUID
+      parameters:
+      - description: Unit GUID
+        in: query
+        name: unit_guid
+        required: true
+        type: string
+      - default: 1000
+        description: Limit of records (1-1000)
+        in: query
+        maximum: 1000
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 1
+        description: Page number (>=1)
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/dto.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get parsed data by Unit GUID
+      tags:
+      - data
+  /get-errors:
+    get:
+      description: Returns paginated errors for a given filename
+      parameters:
+      - description: Filename
+        in: query
+        name: filename
+        required: true
+        type: string
+      - default: 1000
+        description: Limit of records (1-1000)
+        in: query
+        maximum: 1000
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 1
+        description: Page number (>=1)
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.FileErrorInfo'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/dto.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get parsing errors by filename
+      tags:
+      - errors
+  /health:
+    get:
+      description: Check service availability
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - system
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

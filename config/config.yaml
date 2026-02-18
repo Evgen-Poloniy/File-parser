@@ -1,0 +1,19 @@
+# Server config
+server:
+  read_timeout: 4s
+  write_timeout: 10s
+  max_header_bytes: 1048576 # 1 MB
+  time_for_graceful_shutdown: 10s # seconds
+
+# Logger config
+logger:
+  level: info
+  format: json
+
+# Parser config
+parser:
+  count_of_workers: 3
+  scan_frequency: 10s # milliseconds, seconds, minutes
+  input_dir: ./input-data
+  output_dir: ./output-data
+  error_dir: ./error-data
