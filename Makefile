@@ -19,6 +19,9 @@ launch: clean all
 run:
 	go run $(CMD_API_DIR)/main.go
 
+test:
+	go test -cover -count=1 -v ./...
+
 build:
 	docker-compose build
 
