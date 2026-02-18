@@ -16,7 +16,7 @@ type WriterService struct {
 	writer repository.Writer
 }
 
-func newWriterService(writer repository.Writer) *WriterService {
+func NewWriterService(writer repository.Writer) *WriterService {
 	return &WriterService{writer: writer}
 }
 

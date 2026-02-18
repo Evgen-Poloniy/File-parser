@@ -10,7 +10,7 @@ type ReaderService struct {
 	reader repository.Reader
 }
 
-func newReaderService(reader repository.Reader) *ReaderService {
+func NewReaderService(reader repository.Reader) *ReaderService {
 	return &ReaderService{
 		reader: reader,
 	}

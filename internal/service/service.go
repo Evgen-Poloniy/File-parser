@@ -42,12 +42,12 @@ type ParserService struct {
 
 func NewQueryService(reader repository.Reader) *QueryService {
 	return &QueryService{
-		Reader: newReaderService(reader),
+		Reader: NewReaderService(reader),
 	}
 }
 
 func NewParserService(writer repository.Writer) *ParserService {
 	return &ParserService{
-		Writer: newWriterService(writer),
+		Writer: NewWriterService(writer),
 	}
 }
